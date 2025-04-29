@@ -68,10 +68,10 @@ class PriceWorker(
     val text = "BTC: R$ ${"%,.2f".format(btc)} • ETH: R$ ${"%,.2f".format(eth)}"
 
     val notif = NotificationCompat.Builder(applicationContext, channelId)
-      .setContentTitle("Crypto Tray")
-      .setContentText(text)
-      .setSmallIcon(R.drawable.ic_launcher_foreground)
-      .build()
+    .setContentTitle("Crypto Tray")
+    .setContentText(text)
+    .setSmallIcon(android.R.drawable.ic_dialog_alert) // <-- ícone padrão do Android
+    .build()
 
     nm.notify(1, notif)
   }
