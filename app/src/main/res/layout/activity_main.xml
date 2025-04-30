@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
+    <!-- Só um exemplo simples -->
     <TextView
-        android:id="@+id/tvBitcoin"
+        android:id="@+id/helloText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bitcoin: --"
-        android:textSize="24sp"/>
-
-    <TextView
-        android:id="@+id/tvEthereum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ethereum: --"
-        android:textSize="24sp"
-        android:layout_marginTop="8dp"/>
-
-    <Button
-        android:id="@+id/btRefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Atualizar Agora"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        android:text="CryptoTray funcionando!"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
