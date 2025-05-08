@@ -2,9 +2,9 @@ package com.exadmax.cryptotray
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.exadmax.cryptotray.databinding.ActivityMainBinding
 import androidx.work.*
-
+import com.exadmax.cryptotray.databinding.ActivityMainBinding
+import com.exadmax.cryptotray.RetrofitClient
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -16,19 +16,56 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btRefresh.setOnClickListener {
-            // TODO: disparar imediatamente o fetch + notificação
+            fetchCryptoPrices()
         }
 
         setupPeriodicWork()
     }
 
+    private fun fetchCryptoPrices() {
+        Thread {
+            val service = RetrofitClient.instance
+            val call = service.getPrices("bitcoin,ethereum", "brl")
+
+            try {
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    val btc = body?.get("bitcoin")?.get("brl")
+                    val eth = body?.get("ethereum")?.get("brl")
+
+                    if (btc != null && eth != null) {
+                        runOnUiThread {
+                            binding.helloText.text = """
+                                💰 Preços Atualizados:
+                                • BTC: R$ ${"%,.2f".format(btc)}
+                                • ETH: R$ ${"%,.2f".format(eth)}
+                            """.trimIndent()
+                        }
+                    }
+                } else {
+                    showError()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                showError()
+            }
+        }.start()
+    }
+
+    private fun showError() {
+        runOnUiThread {
+            binding.helloText.text = "❌ Falha ao obter preços. Tente novamente."
+        }
+    }
+
     private fun setupPeriodicWork() {
-        val work = PeriodicWorkRequestBuilder<PriceWorker>(1, TimeUnit.HOURS)
-            .build()
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "priceWork",
-            ExistingPeriodicWorkPolicy.REPLACE,
-            work
-        )
+        val work = PeriodicWorkRequestBuilder<PriceWorker>(1, TimeUnit.HOURS).build()
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(
+                "priceWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                work
+            )
     }
 }
